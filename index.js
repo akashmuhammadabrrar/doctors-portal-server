@@ -42,10 +42,18 @@ async function run() {
                 const serviceBookings = bookings.filter(b => b.treatment === service.name);
                 const booked = serviceBookings.map(s => s.slot);
                 const available = service.slots.filter(s => !booked.includes(s));
-                service.available = available;
+                service.slots = available;
             })
 
             res.send(services);
+        });
+
+        app.get('/booking', async (req, res) => {
+            const patient = req.query.patient;
+            const query = { patient: patient };
+            const bookings = await bookingCollection.find(query).toArray();
+            res.send(bookings);
+
         })
 
         app.post('/booking', async (req, res) => {
